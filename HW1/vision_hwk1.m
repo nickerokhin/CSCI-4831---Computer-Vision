@@ -55,7 +55,7 @@ while choice ~= 1
            im1 = subplot(1,2,1)
            im2 = subplot(1,2,2)
            image(current_img, 'Parent', im1)
-           image(newImage, 'Parent', im2)
+           image(uint8(newImage), 'Parent', im2)
            
            % 4. Save the newImage to a file
            

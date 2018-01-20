@@ -9,7 +9,7 @@ clear all;close all;clc;
 
 % Display a menu and get a choice
 choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter','Gauss Filter');  % as you develop functions, add buttons for them here
  
 % Choice 1 is to exit the program
 while choice ~= 1
@@ -18,7 +18,7 @@ while choice ~= 1
            disp('Error - please choose one of the options.')
            % Display a menu and get a choice
            choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter');  % as you develop functions, add buttons for them here
         case 2
            % Load an image
            image_choice = menu('Choose an image', 'lena1', 'mandril1', 'sully', 'yoda', 'shrek');
@@ -61,11 +61,16 @@ while choice ~= 1
            
               
        case 5
-           %....
+           k_size = input('Choose sigma for Gauss filter')
+           newImage = gaussFilter(current_img, k_size);
+           im1 = subplot(1,2,1)
+           im2 = subplot(1,2,2)
+           image(current_img, 'Parent', im1)
+           image(uint8(newImage), 'Parent', im2)
            
        %....
    end
    % Display menu again and get user's choice
    choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter');  % as you develop functions, add buttons for them here
 end

@@ -5,9 +5,11 @@ center = ceil(kernel_size/2)
 
 for x = 1:kernel_size
     for y = 1:kernel_size
-        ydist = abs(y-center);
-        xdist = abs(x-center);
-        gaussKernel(x, y) = (1/(2 * pi * pow2(sigma))) * exp(-((pow2(xdist) + pow2(ydist))/(2 * pow2(sigma))))
+        ydist = abs(y-center)
+        xdist = abs(x-center)
+        prexp = -(pow2(xdist) + pow2(ydist))
+        exponential = exp(-((pow2(xdist) + pow2(ydist))/(2 * pow2(sigma))));
+        gaussKernel(x, y) = 1/(2 * pi * sigma^2) * exp(-((xdist^2 + ydist^2)/(2 * sigma^2)));
     end
 end
 

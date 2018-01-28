@@ -10,7 +10,17 @@ function [ outImg ] = scaleNearest( inImg, factor)
     for rgb = 1:rgbArr
         for col = 1:newxSize
             for row = 1:newySize
-                outImg(row, col, rgb) = inImg(ceil(row/factor), ceil(col/factor), rgb);
+                approxRow = ceil(row/factor);
+                approxCol = ceil(col/factor);
+                if approxRow > ySize
+                    approxRow = ySize;
+                end
+                
+                if approxCol > xSize
+                    approxCol = xSize;
+                end
+                
+                outImg(row, col, rgb) = inImg(approxRow, approxCol, rgb);
                 
             end
         end

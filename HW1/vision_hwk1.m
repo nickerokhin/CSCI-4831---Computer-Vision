@@ -9,7 +9,7 @@ clear all;close all;clc;
 
 % Display a menu and get a choice
 choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter','Gauss Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter','Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
  
 % Choice 1 is to exit the program
 while choice ~= 1
@@ -18,7 +18,7 @@ while choice ~= 1
            disp('Error - please choose one of the options.')
            % Display a menu and get a choice
            choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter', 'Gauss Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
         case 2
            % Load an image
            image_choice = menu('Choose an image', 'lena1', 'mandril1', 'sully', 'yoda', 'shrek');
@@ -46,7 +46,7 @@ while choice ~= 1
            % Mean Filter
            
            % 1. Ask the user for size of kernel
-           k_size = input('Choose your kernel size: ')
+           k_size = input('Choose your kernel size (Any value you want): ')
            % 2. Call the appropriate function
            newImage = meanFilter(current_img, k_size); % create your own function for the mean filter
            
@@ -56,6 +56,8 @@ while choice ~= 1
            im2 = subplot(1,2,2)
            image(current_img, 'Parent', im1)
            image(uint8(newImage), 'Parent', im2)
+           newImgName = strcat('meanfilter', 'k', num2str(k_size), filename)
+           imwrite(uint8(newImage), newImgName)
            
            % 4. Save the newImage to a file
            
@@ -68,9 +70,27 @@ while choice ~= 1
            image(current_img, 'Parent', im1)
            image(uint8(newImage), 'Parent', im2)
            
+           
+       case 6
+           n_size = input('Choose a value for n: ')
+           m_size = input('Choose a value for m: ')
+           newImage = frosty(current_img, n_size, m_size);
+           im1 = subplot(1,2,1)
+           im2 = subplot(1,2,2)
+           image(current_img, 'Parent', im1)
+           image(uint8(newImage), 'Parent', im2)
+           
+       case 7
+           factor = input('Choose a value for the scaling factor: ')
+           newImage = scaleNearest(current_img, factor);
+           im1 = subplot(1,2,1)
+           im2 = subplot(1,2,2)
+           image(current_img, 'Parent', im1)
+           image(uint8(newImage), 'Parent', im2)
+           
        %....
    end
    % Display menu again and get user's choice
    choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter', 'Gauss Filter');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
 end

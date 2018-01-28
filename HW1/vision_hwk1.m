@@ -69,6 +69,8 @@ while choice ~= 1
            im2 = subplot(1,2,2)
            image(current_img, 'Parent', im1)
            image(uint8(newImage), 'Parent', im2)
+           newImgName = strcat('gauss filter', 'k', num2str(k_size), filename)
+           imwrite(uint8(newImage), newImgName)
            
            
        case 6
@@ -79,6 +81,8 @@ while choice ~= 1
            im2 = subplot(1,2,2)
            image(current_img, 'Parent', im1)
            image(uint8(newImage), 'Parent', im2)
+           newImgName = strcat('frosty', 'n', num2str(n_size), 'm', num2str(m_size), filename)
+           imwrite(uint8(newImage), newImgName)
            
        case 7
            factor = input('Choose a value for the scaling factor: ')
@@ -87,6 +91,8 @@ while choice ~= 1
            im2 = subplot(1,2,2)
            image(current_img, 'Parent', im1)
            image(uint8(newImage), 'Parent', im2)
+           newImgName = strcat('scalenearest', 'f', num2str(factor), filename)
+           imwrite(uint8(newImage), newImgName)
            
        %....
    end

@@ -20,11 +20,10 @@ kVertEdgeDistBot = n - kCenterRow;
 kHorizEdgeDistLeft = kCenterCol - 1;
 kHorizEdgeDistRight = m - kCenterCol;
 
-
-
-for rgb = 1:rgbArr
-    for col = 1:xSize
-        for row = 1:ySize
+for col = 1:xSize
+    for row = 1:ySize
+    
+ 
             
             %Bounds for kernel range on source image using distance
             
@@ -53,15 +52,14 @@ for rgb = 1:rgbArr
             
 
             
-            inImgSample = inImg(rowStart:rowEnd, colStart:colEnd, rgb);
+            inImgSample = inImg(rowStart:rowEnd, colStart:colEnd, :);
             
             %Selects random element from random row in inImgSample
             
-            outImg(row, col, rgb) = datasample(datasample(inImgSample, 1), 1);
+            outImg(row, col, :) = datasample(datasample(inImgSample, 1), 1);
             
 
         end
     end
     
-end
 end

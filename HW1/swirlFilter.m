@@ -9,8 +9,9 @@ ySize = imSize(1);
         
         for row = 1:ySize
             
-            y = row - oy;
             x = col - ox;
+            y = row - oy;
+            
             if y == 0
                 y = 1;
             end
@@ -18,13 +19,16 @@ ySize = imSize(1);
             if x == 0
                 x = 1;
             end
+            
             theta = atan(y/x);
             radius = (x^2 + y^2)^.5;
-            scaleTheta = theta + radius/factor;
+            scaleTheta = mod(theta + radius/factor, 2*pi)
             x = radius * cos(scaleTheta);
             y = radius * sin(scaleTheta);
             [sx sy] = sampleNearest(x,y, imSize, ox, oy);
-            outImg(row,col, :) = inImg(sy,sx, :);
+            
+           
+            outImg(row,col, :) = inImg(sx,sy, :);
             
             
         end

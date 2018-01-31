@@ -48,7 +48,9 @@ function [ outImg ] = meanFilter(inImg, kernel_size)
                 end
 
                 kernShadow = inImg(rowStart:rowEnd, colStart:colEnd, rgb);
+                %finding mean of resulting kernel "shadow"
                 outImg(row, col, rgb) = mean2(kernShadow);
+                
             end
             
         end

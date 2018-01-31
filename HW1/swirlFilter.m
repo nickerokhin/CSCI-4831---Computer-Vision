@@ -12,19 +12,21 @@ ySize = imSize(1);
             x = col;
             y = row;
            
-           
+            
             radx = ((x^2 + y^2)^.5);
-            theta = atan(y/x);
-            if isnan(theta)
-                theta = 0
-            end
+            %Polar angle
+            theta = atan2(ox-x,oy-y);
+            %Distance from origin
             radius = ((ox-x)^2 + (oy-y)^2)^.5;
+            %Scaling thete depending on radius
             scaleTheta = theta + (radius/100)*factor;
-            x = radx * cos(scaleTheta);
-            y = radx * sin(scaleTheta);
+            %Converting new theta back to x,y
+            x = radius * cos(scaleTheta);
+            y = radius * sin(scaleTheta);
+            %Nearest neighbor & adding ox, oy back to x,y
             [sx sy] = sampleNearest(x,y, imSize, ox, oy);
            
-           
+            %Inverse map
             outImg(row,col, :) = inImg(sy,sx, :);
            
            
@@ -36,8 +38,8 @@ end
  
 function [ newX, newY ] = sampleNearest(x, y, imSize, ox, oy)
  
-newX = ceil(x);
-newY = ceil(y);
+newX = ceil(x) + ox;
+newY = ceil(y) + oy;
  
 if newX > imSize(2)
     newX = imSize(2);

@@ -2,7 +2,7 @@ function [ outImg ] = gaussFilter( inImg, sigma )
 
 kernel_size = 2 * ceil(2 * sigma) + 1
 center = ceil(kernel_size/2)
-
+%Creating the gaussian kernel
 for x = 1:kernel_size
     for y = 1:kernel_size
         ydist = abs(y-center)
@@ -25,8 +25,10 @@ for rgb = 1:rgbArr
     for col = 1 + k_overlap:xSize - k_overlap
         %loop through rows
         for row = 1 + k_overlap:ySize - k_overlap
+           %piece of inImg corresponding to source pixel & kernel size
            kernShadow = inImg(row - k_overlap:row + k_overlap, col - k_overlap:col + k_overlap, rgb);
            kernSum = 0;
+           %Convolution sum
            for y = 1:kernel_size
                for x = 1:kernel_size
                    kernSum = kernSum + kernShadow(x,y) * gaussKernel(x,y);

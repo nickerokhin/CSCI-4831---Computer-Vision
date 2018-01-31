@@ -10,8 +10,11 @@ function [ outImg ] = scaleNearest( inImg, factor)
     for rgb = 1:rgbArr
         for col = 1:newxSize
             for row = 1:newySize
+                %Nearest neighbor approximation upper bound
                 approxRow = ceil(row/factor);
                 approxCol = ceil(col/factor);
+                
+                %In case approximation is out of bounds of original image
                 if approxRow > ySize
                     approxRow = ySize;
                 end

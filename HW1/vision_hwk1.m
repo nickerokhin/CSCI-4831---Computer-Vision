@@ -9,7 +9,7 @@ clear all;close all;clc;
 
 % Display a menu and get a choice
 choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter','Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter','Gauss Filter', 'Frosty', 'Scale Nearest', 'Scale Bilinear', 'Swirl Filter', 'Famous me');  % as you develop functions, add buttons for them here
  
 % Choice 1 is to exit the program
 while choice ~= 1
@@ -18,7 +18,7 @@ while choice ~= 1
            disp('Error - please choose one of the options.')
            % Display a menu and get a choice
            choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest', 'Scale Bilinear', 'Swirl Filter', 'Famous me');  % as you develop functions, add buttons for them here
         case 2
            % Load an image
            image_choice = menu('Choose an image', 'lena1', 'mandril1', 'sully', 'yoda', 'shrek');
@@ -94,9 +94,44 @@ while choice ~= 1
            newImgName = strcat('scalenearest', 'f', num2str(factor), filename)
            imwrite(uint8(newImage), newImgName)
            
+       case 8
+           factor = input('Choose a value for the scaling factor: ')
+           newImage = scaleBilinear(current_img, factor);
+           im1 = subplot(1,2,1)
+           im2 = subplot(1,2,2)
+           image(current_img, 'Parent', im1)
+           image(uint8(newImage), 'Parent', im2)
+           newImgName = strcat('scalebilinear', 'f', num2str(factor), filename)
+           imwrite(uint8(newImage), newImgName)
+           
+       case 9
+           factor = input('Choose a value for swirl factor: ')
+           ox = input('Choose x coordinate for swirl origin: ')
+           oy = input('Choose y coordinate for swirl origin: ')
+           newImage = swirlFilter(current_img, factor, ox, oy);
+           im1 = subplot(1,2,1)
+           im2 = subplot(1,2,2)
+           image(current_img, 'Parent', im1)
+           image(uint8(newImage), 'Parent', im2)
+           
+           
+       case 10
+           ox = input('Choose row # for upper left of paste box')
+           oy = input('Choose colum # for upper left of paste box')
+           newImage = famousMe(current_img, imread('nick.jpg'), ox , oy);
+           im1 = subplot(1,3,1)
+           im2 = subplot(1,3,2)
+           im3 = subplot(1,3,3)
+           image(current_img, 'Parent', im1)
+           image(imread('nick.jpg'), 'Parent', im2)
+           image(newImage, 'Parent', im3)
+           newImgName = strcat('famousme', 'nick', 'ox', num2str(ox), 'oy', num2str(oy),filename)
+           imwrite(uint8(newImage), newImgName)
+           
+           
        %....
    end
    % Display menu again and get user's choice
    choice = menu('Choose an option', 'Exit Program', 'Load Image', ...
-    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest');  % as you develop functions, add buttons for them here
+    'Display Image', 'Mean Filter', 'Gauss Filter', 'Frosty', 'Scale Nearest', 'Scale Bilinear', 'Swirl Filter', 'Famous me');  % as you develop functions, add buttons for them here
 end

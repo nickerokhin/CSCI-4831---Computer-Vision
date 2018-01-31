@@ -1,8 +1,8 @@
 function [ outImg ] = famousMe( backImg, srcImg, ox, oy)
 
 srcImg = scaleNearest(srcImg, 0.2);
-greyOut = grayScale(srcImg);
-binOut = greyOut > 180;
+grayOut = grayScale(srcImg);
+binOut = grayOut > 180;
 srcImgSize = size(srcImg);
 
 

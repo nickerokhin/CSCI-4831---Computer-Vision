@@ -2,14 +2,14 @@
 
 function [ homo ] = computeH( imgPoints )
 eucDist = 10000000;
-bestHomo = []
+bestHomo = [];
 for ct = 1:20
     randomPoints = datasample(imgPoints, 4, 1);
-    A = []
-    b = []
+    A = [];
+    b = [];
     for i = 1:4
         
-        x1 =randomPoints(i, 1), 
+        x1 =randomPoints(i, 1);
         y1 =randomPoints(i, 2);
         x2 = randomPoints(i, 3);
         y2 = randomPoints(i, 4);
@@ -20,51 +20,50 @@ for ct = 1:20
         Ar2 = [0 0 0 x1 y1 1 -x1*y2 -y1*y2];
         
         
-        A = [A; Ar1; Ar2]
-        b = [b; x2; y2]
+        A = [A; Ar1; Ar2];
+        b = [b; x2; y2];
         
     end
-    %{
-    [U, S, V] = svd(A);
-    V;
-    h = V(:, end);
-    h = h/h(end)
-    
-    %h = reshape(h,3,3)
-    [x1 y1]
-    calcx2 = h * [x1 y1 1]'
-    calcx2 = calcx2/calcx2(3)
-    [x2 y2 1]'
-    %}
-    h = (A'* A)\(A' * b)
-    h = [h;1]
-    %h = reshape(h,[3,3])
+    h = (A'* A)\(A' * b);
+    h = [h;1];
     h = [h(1:3)'; h(4:6)'; h(7:9)'];
     [x1 y1];
-    p2p = h * [x1 y1 1]';
-    p2p = p2p/p2p(3);
-    p2 = [x2 y2 1]';
-    newDist = sqrt(sum((p2 - p2p) .^ 2));
-    if newDist < eucDist
-        eucDist = newDist;
-        bestHomo = h;
+    eucSum = 0
+    for pts = 1:10
+        x1 = imgPoints(pts, 1);
+        y1 = imgPoints(pts, 2);
+        x2 = imgPoints(pts, 3);
+        y2 = imgPoints(pts, 4);
+        
+        p2p = h * [x1 y1 1]';
+        p2p = p2p/p2p(3);
+        p2 = [x2 y2 1]';
+        
+        newDist = sqrt(sum((p2 - p2p) .^ 2));
+        eucSum = eucSum + newDist;
+        
     end
+    if eucSum < eucDist
+            eucDist = eucSum
+            bestHomo = h;
+    end
+
     
-homo = bestHomo  
+homo = bestHomo;
+
     
     
     
 end
 
-imgPoints = round([374.3143  290.3926  815.3587  320.2934;
-  529.1366  313.4801  984.8769  329.9408;
-  440.8607  301.2573  889.7813  327.1844;
-  503.3329  397.6817  960.0693  420.9017;
-  519.6300  371.8780  977.9859  393.3378;
-  326.7812  507.6870  782.2820  536.6703;
-  296.9032  460.1538  749.2052  492.5680;
-  446.2931  507.6870  909.0760  539.4266;
-  315.9164  590.5305  778.1474  622.1184;
-  180.1074  507.6870  637.5713  540.8048
-  ]);
+imgPoints = [528.0000  313.0000  984.0000  335.0000;
+  442.0000  303.0000  890.0000  327.0000;
+  502.0000  399.0000  958.0000  423.0000;
+  314.0000  617.0000  778.0000  649.0000;
+  182.0000  503.0000  640.0000  539.0000;
+  494.0000  371.0000  952.0000  393.0000;
+  374.0000  291.0000  816.0000  319.0000;
+  320.0000  459.0000  776.0000  493.0000;
+  464.0000  495.0000  924.0000  533.0000;
+  112.0000  573.0000  576.0000  607.0000]
 end

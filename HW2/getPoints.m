@@ -4,7 +4,7 @@
 %Ioana Fleming
 
 %tower2, tower1
-function [ outPoints ] = getPoints( inImg1, inImg2 )
+function [ outPoints ] = getPoints( inImg1, inImg2, ptCt )
 
 figure(1);
 imshow(inImg1);
@@ -16,7 +16,7 @@ imshow(inImg2);
 axis2 = gca;
 title('Image2');
 
-for i = 1:10
+for i = 1:ptCt
     
 axes(axis1);
 outPoints(i, 1:2) = fliplr(ginput(1));

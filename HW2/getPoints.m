@@ -1,6 +1,6 @@
 %Nicholas Erokhin
 %CSCI 4830
-%HW 1
+%HW 2
 %Ioana Fleming
 
 %tower2, tower1

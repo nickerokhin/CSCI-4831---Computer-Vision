@@ -1,8 +1,12 @@
+%Nicholas Erokhin
+%CSCI 4830
+%HW 2
+%Ioana Fleming
+%Read in both tower images
 
-%{
 image1 = imread('uttower2.jpg');
 image2 = imread('uttower1.jpg');
-
+%In case you don't want to select 10 points manually
 %{
 imgPoints = round([344.9219  905.8642  323.1510  456.6921;
   536.3080  780.2214  504.9886  325.1185;
@@ -15,13 +19,22 @@ imgPoints = round([344.9219  905.8642  323.1510  456.6921;
   622.5048  580.0695  589.2549  110.7570;
   645.8802  778.7604  612.9085  316.2484])
 %}
+
+%image on right is first argument, left image is second argument
+
 imgPoints = getPoints(image1, image2, 10)
+
+%Sizes for constraints
+
 imSize = size(image1);
 im2Size = size(image2);
 rgb = imSize(3);
 col = imSize(2);
 row = imSize(1);
 homo = computeH(imgPoints, 10);
+
+%Using homography to compute bounds of warped image
+
 maxIndices1 = round(homo * [row col 1]');
 maxIndices1 = maxIndices1/maxIndices1(3);
 maxIndices2 = round(homo * [0 col 1]');
@@ -36,18 +49,27 @@ minCol = round(min([maxIndices1(2) maxIndices2(2) maxIndices3(2) maxIndices4(2)]
 minRow = round(min([maxIndices1(1) maxIndices2(1) maxIndices3(1) maxIndices4(1)]));
 %outImg = zeros([maxIndices(1), maxIndices(2), 3]);
 outImg = []
+
+%Inverse homography matrix for inverse warp
+
 invHomo = inv(homo);
 
 for c = minCol:maxCol
     for r = minRow:maxRow
+        
+        %Translated coordinates from warped image
         xlated = invHomo * [r c 1]';
         xlated = xlated/xlated(3);
+        
+       
         
         if xlated(1) <= 0 || xlated(2) <= 0 || xlated(1) > row || xlated(2) > col
             continue
             
         end
-            
+         
+        %Coordinates where transformation from image1 is top left corner of
+        %image2
         img2Coords = homo * xlated;
         img2Coords = round(img2Coords/img2Coords(3));
         if img2Coords(1) == 1 && img2Coords(2) == 1
@@ -64,6 +86,9 @@ for c = minCol:maxCol
     
 end
 
+
+%Using relative image1 coordinates to paste unwarped image onto warped
+%image
 topLeftImg2
 for col = topLeftImg2(2) + 1:topLeftImg2(2) + im2Size(2)
     for row = topLeftImg2(1) + 1:topLeftImg2(1) + im2Size(1);
@@ -74,6 +99,7 @@ for col = topLeftImg2(2) + 1:topLeftImg2(2) + im2Size(2)
     end
 end
 
+%Plotting stuff
 im1 = subplot(2,2,1)
 im2 = subplot(2,2,2)
 im3 = subplot(2,2,3)
@@ -82,8 +108,11 @@ image(uint8(image1), 'Parent', im1)
 image(uint8(image2), 'Parent', im2)
 image(uint8(outImg), 'Parent', im3)
 
+%ONLY CLOSE FIGURE SHOWING 3 IMAGES, REQUIRED TO CONTINUE
 waitfor(im1)
-%}
+
+%Same process as above, just for my own images
+
 myImage1 = uint8(scaleNearest(imread('IMG_1256.JPG'), .25));
 myImage2 = uint8(scaleNearest(imread('IMG_5819.JPG'), .25));
 imgPointsNew = round(getPoints(myImage1, myImage2, 10))
@@ -172,11 +201,14 @@ waitfor(im1)
 
 
 
+%Pasting image onto frame in another image
+
 frameImg = uint8(scaleNearest(imread('IMG_6579.JPG'), .25));
 framed = imread('teslamoon.jpeg');
 frameImgCopy = uint8(scaleNearest(imread('IMG_6579.JPG'), .25));
 imgPointsNew = round(getPoints(frameImg, framed, 4));
 
+%Getting sizes for bounds
 frameImgSize = size(frameImg);
 frameImgCol = frameImgSize(2);
 frameImgRow = frameImgSize(1);
@@ -188,10 +220,16 @@ framedImgSize = size(framed)
 
 for col = 1:frameImgCol
     for row = 1:frameImgRow
+        
+        %Looping through background image
+        
         xlated = homo * [row col 1]';
         xlated = xlated/xlated(3);
-        
+        %pasting in foreground image when
+        %transformed coordinates are not negative (meaning foreground
+        %picture is within the frame on background picture)
         if xlated(1) >= 1 && xlated(2) >= 1 && xlated(1) <= framedImgSize(1) && xlated(2) <= framedImgSize(2)
+            %Inverse warp
             frameImg(row, col, :) = framed(floor(xlated(1)), floor(xlated(2)), :);
         end
             
@@ -201,6 +239,8 @@ for col = 1:frameImgCol
     
 end
 
+
+%Displaying images
 
 im1 = subplot(2,2,1)
 im2 = subplot(2,2,2)

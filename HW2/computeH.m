@@ -1,4 +1,7 @@
-
+%Nicholas Erokhin
+%CSCI 4830
+%HW 2
+%Ioana Fleming
 
 function [ homo ] = computeH( imgPoints, ptCt)
 eucDist = 10000000;

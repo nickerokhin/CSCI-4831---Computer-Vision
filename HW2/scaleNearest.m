@@ -1,3 +1,8 @@
+%Nicholas Erokhin
+%CSCI 4830
+%HW 2
+%Ioana Fleming
+
 function [ outImg ] = scaleNearest( inImg, factor)
     imSize = size(inImg);
     rgbArr = imSize(3);

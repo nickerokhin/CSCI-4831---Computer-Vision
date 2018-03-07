@@ -8,7 +8,7 @@
 % Load the |stereoParameters| object, which is the result of calibrating
 % the camera using either the |stereoCameraCalibrator| app or the
 % |estimateCameraParameters| function.
-
+%{
 % Load the stereoParameters object.
 load('handshakeStereoParams.mat')
 
@@ -43,16 +43,16 @@ size(frameRightRect)
 figure;
 imshow(stereoAnaglyph(frameLeftRect, frameRightRect));
 title('Rectified Video Frames');
-
+%}
 %% Compute Disparity
 % In rectified stereo images any pair of corresponding points are located 
 % on the same pixel row. For each pixel in the left image compute the
 % distance to the corresponding pixel in the right image. This distance is
 % called the disparity, and it is proportional to the distance of the
 % corresponding world point from the camera.
-frameLeftGray  = rgb2gray(frameLeftRect);
-frameRightGray = rgb2gray(frameRightRect);
-    
+frameLeftGray  = rgb2gray(imread('frame_1L.png'));
+frameRightGray = rgb2gray(imread('frame_1R.png'));
+
 disparityMap = disparity(frameLeftGray, frameRightGray);
 disparityMap1 = ssdDisparity(frameLeftGray, frameRightGray, 1);
 disparityMap5 = ssdDisparity(frameLeftGray, frameRightGray, 5);

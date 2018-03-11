@@ -5,7 +5,9 @@ function [ dMap ] = stereoDP( e1, e2, maxDisp, occ)
     %build cost matix
     dCost = zeros([rowSize rowSize 3]);
     dCost(:, :, 1) = 1000 * ones([rowSize rowSize]);
-
+    occ = double(occ);
+    e1 = double(e1);
+    e2 = double(e2);
   for i = 1:rowSize
     for j = 1:rowSize
 
@@ -20,24 +22,14 @@ function [ dMap ] = stereoDP( e1, e2, maxDisp, occ)
   end
     
     for i = 2:rowSize
-                         
-         if i + maxDisp > rowSize
-            dispRange = rowSize - i;
-
-         else
-            dispRange = maxDisp;
-
-         end
-            for j = i:(i + dispRange)
-                dispRange;
-                i;
-                j;
+            for j = 2:rowSize
+                
                 dCost(j, i, 1) = (e1(j - 1) - e2(i - 1))^2;
                 northwest = dCost(j - 1, i - 1, 1) + dCost(j, i, 1);
                 west = dCost(j, i - 1, 1) + occ;
                 north = dCost(j - 1, i, 1) + occ;
                 [M, idx] = min([northwest west north]);
-                
+                dCost(j, i, 1) = M;
                 switch idx
                     case 1
                         

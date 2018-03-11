@@ -1,7 +1,7 @@
 function [ dCost ] = stereoDP( e1, e2, maxDisp, occ)
     rowSize = size(e1)
     %build cost matix
-
+  for i = 1:rowSize(2)
     for j = 1:rowSize(2) + 1
 
         if i == 1
@@ -10,7 +10,12 @@ function [ dCost ] = stereoDP( e1, e2, maxDisp, occ)
         elseif j == 1
             dCost(i, j) = i * occ;
 
-        else 
+        end
+    end
+  end
+    
+    for j = 2:rowSize(2) + 1
+        
              if j + maxDisp > rowSize(2)
                 dispRange = rowSize(2) - j;
 
@@ -23,12 +28,10 @@ function [ dCost ] = stereoDP( e1, e2, maxDisp, occ)
                 dCost(j, j + d) = (e1(j + d) - e2(j))^2;
 
             end
-            
-            
-            
-        end
-        
     end
-
-
+    
+            
 end
+        
+
+

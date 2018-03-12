@@ -8,7 +8,7 @@
 % Load the |stereoParameters| object, which is the result of calibrating
 % the camera using either the |stereoCameraCalibrator| app or the
 % |estimateCameraParameters| function.
-%{
+
 % Load the stereoParameters object.
 load('handshakeStereoParams.mat')
 
@@ -32,19 +32,20 @@ player = vision.DeployableVideoPlayer('Location', [20, 400]);
 % points to one dimension.  Rectified images can also be combined into an
 % anaglyph, which can be viewed using the stereo red-cyan glasses to see
 % the 3-D effect.
+%{
 frameLeft = readerLeft.step();
 frameRight = readerRight.step();
 
 [frameLeftRect, frameRightRect] = ...
     rectifyStereoImages(frameLeft, frameRight, stereoParams);
-
-size(frameLeftRect)
-size(frameRightRect)
-figure;
-imshow(stereoAnaglyph(frameLeftRect, frameRightRect));
-title('Rectified Video Frames');
 %}
-%% Compute Disparity
+%size(frameLeftRect)
+%size(frameRightRect)
+%figure;
+%imshow(stereoAnaglyph(frameLeftRect, frameRightRect));
+%title('Rectified Video Frames');
+
+
 % In rectified stereo images any pair of corresponding points are located 
 % on the same pixel row. For each pixel in the left image compute the
 % distance to the corresponding pixel in the right image. This distance is
@@ -52,36 +53,101 @@ title('Rectified Video Frames');
 % corresponding world point from the camera.
 frameLeftGray  = rgb2gray(imread('frame_1L.png'));
 frameRightGray = rgb2gray(imread('frame_1R.png'));
+%frameLeftGray = rgb2gray(frameLeftRect);
+%frameRightGray = rgb2gray(frameRightRect);
 
-disparityMap = disparity(frameLeftGray, frameRightGray);
-disparityMap1 = ssdDisparity(frameLeftGray, frameRightGray, 1);
-disparityMap5 = ssdDisparity(frameLeftGray, frameRightGray, 5);
-disparityMap11 = ssdDisparity(frameLeftGray, frameRightGray, 11);
+%disparityMap = disparity(frameLeftGray, frameRightGray);
+%disparityMap1 = ssdDisparity(frameLeftGray, frameRightGray, 3);
 
-figure;
+%disparityMap1s
+%disparityMap5 = nccDisparity(frameLeftGray, frameRightGray, 3);
+%disparityMap11 = ssdDisparity(frameLeftGray, frameRightGray, 7);
+%fLeftSize = size(frameLeftGray)
+%disparityMapDP = zeros(fLeftSize);
+
+%{
+for row = 1:fLeftSize(1)
+    row
+    e1 = frameLeftGray(row, :);
+    e2 = frameRightGray(row, :);
+    size(e1);
+    size(e2);
+    
+    dispRow =  stereoDP(e1, e2, 100, 1.01);
+    dispRow = dispRow - min(dispRow);
+    disparityMapDP(row, :) = dispRow(2:end);
+    
+
+end
+
+figure
+
 im1 = subplot(2,2,1)
 im2 = subplot(2,2,2)
+
 im3 = subplot(2,2,3)
 im4 = subplot(2,2,4)
+
 image(disparityMap, 'Parent', im1)
 image(disparityMap1, 'Parent', im2)
+
 image(disparityMap5, 'Parent', im3)
-image(disparityMap11, 'Parent', im4)
+image(disparityMapDP, 'Parent', im4)
+
 title('Disparity Map');
 colormap jet
 colorbar
-%{
-%% Reconstruct the 3-D Scene
+
+
+dlr = nccDisparity(frameLeftGray, frameRightGray, 3);
+frameLGray2 = fliplr(frameLeftGray);
+frameRGray2 = fliplr(frameRightGray);
+drl = nccDisparity(frameRGray2, frameLGray2, 3);
+drl = fliplr(drl);
+outliers = generateOutliers(dlr,drl, 1);
+figure
+
+%im2 = subplot(1,2,2)
+
+imshow(outliers)
+%}
+
+figure;
+
+errorMap = createErrorMap(disparityMap5, imread('frame_1LR.png'));
+disparityDiff = makeDisparityDifferences(disparityMap5, imread('frame_1LR.png'));
+
+
+%disparity map
+im1 = subplot(2,2,1)
+%ground truth
+im2 = subplot(2,2,2)
+%error map
+im3 = subplot(2,2,3)
+%histogram differences
+im4 = subplot(2,2,4)
+
+image(disparityMap5, 'Parent', im1)
+image(imread('frame_1LR.png'), 'Parent', im2)
+image(errorMap, 'Parent', im3)
+figure
+
+histogram(disparityDiff)
+
+
+
+
 % Reconstruct the 3-D world coordinates of points corresponding to each
 % pixel from the disparity map.
-points3D = reconstructScene(disparityMap, stereoParams);
-
+%{
+points3D = computeDepth(disparityMap, stereoParams);
+size(points3D)
 % Convert to meters and create a pointCloud object
 points3D = points3D ./ 1000;
 ptCloud = pointCloud(points3D, 'Color', frameLeftRect);
 
 % Create a streaming point cloud viewer
-player3D = pcplayer([-3, 3], [-3, 3], [0, 8], 'VerticalAxis', 'y', ...
+player3D = pcplayer([-1, 1], [-1, 1], [0, 8], 'VerticalAxis', 'y', ...
     'VerticalAxisDir', 'down');
 
 % Visualize the point cloud
@@ -101,7 +167,7 @@ bboxes = peopleDetector.step(frameLeftGray);
 %% Determine The Distance of Each Person to the Camera
 % Find the 3-D world coordinates of the centroid of each detected person
 % and compute the distance from the centroid to the camera in meters.
-
+%{
 % Find the centroids of detected people.
 centroids = [round(bboxes(:, 1) + bboxes(:, 3) / 2), ...
     round(bboxes(:, 2) + bboxes(:, 4) / 2)];
@@ -124,11 +190,11 @@ end
 figure;
 imshow(insertObjectAnnotation(frameLeftRect, 'rectangle', bboxes, labels));
 title('Detected People');
-
+%}
 %% Process the Rest of the Video
 % Apply the steps described above to detect people and measure their
 % distances to the camera in every frame of the video.
-
+%{
 while ~isDone(readerLeft) && ~isDone(readerRight)
     % Read the frames.
     frameLeft = readerLeft.step();
@@ -146,7 +212,7 @@ while ~isDone(readerLeft) && ~isDone(readerRight)
     disparityMap = disparity(frameLeftGray, frameRightGray);
     
     % Reconstruct 3-D scene.
-    points3D = reconstructScene(disparityMap, stereoParams);
+    points3D = computeDepth(disparityMap, stereoParams);
     points3D = points3D ./ 1000;
     ptCloud = pointCloud(points3D, 'Color', frameLeftRect);
     view(player3D, ptCloud);
@@ -188,7 +254,7 @@ end
 reset(readerLeft);
 reset(readerRight);
 release(player);
-
+%}
 %% Summary
 % This example showed how to localize pedestrians in 3-D using a calibrated
 % stereo camera.

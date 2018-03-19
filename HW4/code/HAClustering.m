@@ -108,7 +108,7 @@ function idx = HAClustering(X, k, visualize2D)
         %                            YOUR CODE HERE                           %
         %                                                                     %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        [values, smallestCols] = min(X);
+        [values, smallestCols] = min(dists);
         [~, i] = min(values);
         j = smallestCols(i);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,7 +157,7 @@ function idx = HAClustering(X, k, visualize2D)
         jclusterSize = cluster_sizes(j);
         
         numPointsinCluster = iclusterSize + jclusterSize;
-        centroids(i, :) = (sum(X(idx == i, :)) + sum(X(idx == j, :))) ./ numPointsinCluster;
+        centroids(i, :) = (iclusterSize * centroids(i, :) + jclusterSize * centroids(j, :))  ./ numPointsinCluster;
         centroids(j, :) = +Inf;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %                                                                     %
@@ -196,7 +196,6 @@ function idx = HAClustering(X, k, visualize2D)
         dists(:, i) = ijdist;
         
         dists(i, i) = +Inf;
-        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %                                                                     %
         %                            END YOUR CODE                            %
